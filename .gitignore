@@ -1,0 +1,16 @@
+# OpenClaw Git Ignore
+
+# 全部忽略
+*
+
+# 只追踪这些文件
+!openclaw.json
+!.gitignore
+
+# workspace目录
+!workspace/
+workspace/*
+!workspace/*.md
+!workspace/*.js
+workspace/node_modules/
+workspace/archive/
