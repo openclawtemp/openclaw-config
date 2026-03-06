@@ -1,0 +1,465 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.26",
+    "lastTouchedAt": "2026-03-02T05:56:41.316Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-03-02T05:56:41.174Z",
+    "lastRunVersion": "2026.2.26",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "auth": {
+    "profiles": {
+      "minimax-cn:default": {
+        "provider": "minimax-cn",
+        "mode": "api_key"
+      },
+      "google:default": {
+        "provider": "google",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "minimax-cn": {
+        "baseUrl": "https://api.minimaxi.com/anthropic",
+        "api": "anthropic-messages",
+        "authHeader": true,
+        "models": [
+          {
+            "id": "MiniMax-M2.5",
+            "name": "MiniMax M2.5",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0.3,
+              "output": 1.2,
+              "cacheRead": 0.03,
+              "cacheWrite": 0.12
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "google": {
+        "baseUrl": "https://geminiapi.jianweiai.top/v1",
+        "apiKey": "AIzaSyD5h-IfoA7VX1N9WXALZyx1FjeCwuIFa6Q",
+        "models": [
+          {
+            "id": "gemini-2.5-flash",
+            "name": "Gemini 2.5 Flash",
+            "vision": true,
+            "input": ["text", "image"],
+            "output": ["text"],
+            "cost": {
+              "input": 0,
+              "output": 0
+            },
+            "contextWindow": 1000000,
+            "maxTokens": 65536
+          },
+          {
+            "id": "gemini-2.0-flash",
+            "name": "Gemini 2.0 Flash",
+            "vision": true,
+            "input": ["text", "image"],
+            "output": ["text"],
+            "cost": {
+              "input": 0,
+              "output": 0
+            },
+            "contextWindow": 1000000,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "doubao": {
+        "baseUrl": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+        "apiKey": "77dad1cd-d821-4214-8f53-3d7a87378d4d",
+        "models": [
+          {
+            "id": "doubao-seed-2.0-pro",
+            "name": "Doubao Seed 2.0 Pro",
+            "input": ["text"],
+            "output": ["text"],
+            "cost": {
+              "input": 0,
+              "output": 0
+            },
+            "contextWindow": 32000,
+            "maxTokens": 16000
+          },
+          {
+            "id": "doubao-seed-2.0",
+            "name": "Doubao Seed 2.0",
+            "input": ["text"],
+            "output": ["text"],
+            "cost": {
+              "input": 0,
+              "output": 0
+            },
+            "contextWindow": 8000,
+            "maxTokens": 8000
+          },
+          {
+            "id": "doubao-seed-2.0-flash",
+            "name": "Doubao Seed 2.0 Flash",
+            "input": ["text"],
+            "output": ["text"],
+            "cost": {
+              "input": 0,
+              "output": 0
+            },
+            "contextWindow": 8000,
+            "maxTokens": 8000
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "minimax-cn/MiniMax-M2.5"
+      },
+      "skills": [
+        "feishu-media",
+        "ai-image-generator",
+        "find-skills",
+        "brave-search",
+        "qiniu-upload",
+        "wechat-cover"
+      ],
+      "memorySearch": {
+        "provider": "gemini",
+        "model": "gemini-embedding-001"
+      },
+      "models": {
+        "minimax-cn/MiniMax-M2.5": {
+          "alias": "Minimax"
+        },
+        "google/gemini-2.5-flash": {
+          "alias": "Gemini"
+        },
+        "doubao/doubao-seed-2.0-pro": {
+          "alias": "DoubaoPro"
+        },
+        "doubao/doubao-seed-2.0": {
+          "alias": "Doubao"
+        },
+        "doubao/doubao-seed-2.0-flash": {
+          "alias": "DoubaoFlash"
+        }
+      },
+      "workspace": "C:\\Users\\Administrator\\.openclaw\\workspace",
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8,
+        "maxSpawnDepth": 0
+      },
+      "timeoutSeconds": 300
+    },
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "name": "Boss"
+      },
+      {
+        "id": "assistant",
+        "name": "Assistant",
+        "workspace": "C:\\Users\\Administrator\\.openclaw\\agent-workspaces\\workspace-assistant",
+        "model": {
+          "primary": "doubao/doubao-seed-2.0-flash"
+        }
+      },
+      {
+        "id": "skills-monitor",
+        "name": "Skills专家",
+        "workspace": "C:\\Users\\Administrator\\.openclaw\\agent-workspaces\\workspace-skills-monitor"
+      },
+      {
+        "id": "douyin",
+        "name": "抖音运营专家",
+        "workspace": "C:\\Users\\Administrator\\.openclaw\\agent-workspaces\\workspace-douyin",
+        "model": {
+          "primary": "doubao/doubao-seed-2.0"
+        },
+        "skills": ["ai-image-generator"],
+        "subagents": {
+          "maxSpawnDepth": 0
+        }
+      },
+      {
+        "id": "voc-analyst",
+        "name": "VOC Analyst",
+        "workspace": "C:\\Users\\Administrator\\.openclaw\\agent-workspaces\\workspace-voc-analyst",
+        "model": {
+          "primary": "doubao/doubao-seed-2.0-pro"
+        }
+      },
+      {
+        "id": "content-writer",
+        "name": "Content Writer",
+        "workspace": "C:\\Users\\Administrator\\.openclaw\\agent-workspaces\\workspace-content-writer",
+        "model": {
+          "primary": "doubao/doubao-seed-2.0-pro"
+        },
+        "skills": ["ai-image-generator"]
+      },
+      {
+        "id": "social-media",
+        "name": "Social Media Expert",
+        "workspace": "C:\\Users\\Administrator\\.openclaw\\agent-workspaces\\workspace-social-media",
+        "model": {
+          "primary": "doubao/doubao-seed-2.0-flash"
+        },
+        "skills": ["ai-image-generator"]
+      },
+      {
+        "id": "designer",
+        "name": "设计师",
+        "workspace": "C:\\Users\\Administrator\\.openclaw\\agent-workspaces\\workspace-designer",
+        "skills": ["ai-image-generator"]
+      },
+      {
+        "id": "browser",
+        "name": "浏览器自动化专家",
+        "workspace": "C:\\Users\\Administrator\\.openclaw\\agent-workspaces\\workspace-browser",
+        "model": {
+          "primary": "doubao/doubao-seed-2.0"
+        },
+        "skills": ["agent-browser", "playwright-browser"],
+        "subagents": {
+          "maxSpawnDepth": 0
+        }
+      }
+    ],
+    "allowAgents": [
+      "main",
+      "assistant",
+      "content-writer",
+      "douyin",
+      "browser",
+      "designer",
+      "voc-analyst",
+      "social-media",
+      "skills-monitor"
+    ]
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer",
+    "reset": {
+      "mode": "manual"
+    },
+    "maintenance": {
+      "mode": "enforce",
+      "pruneAfter": "14d",
+      "maxEntries": 500,
+      "rotateBytes": "10mb"
+    }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "boot-md": {
+          "enabled": true
+        },
+        "bootstrap-extra-files": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        },
+        "session-memory": {
+          "enabled": true
+        },
+        "session": {
+          "dmScope": "per-channel-peer",
+          "reset": {
+            "mode": "daily",
+            "atHour": 4,
+            "idleMinutes": 120
+          },
+          "maintenance": {
+            "mode": "enforce",
+            "pruneAfter": "14d",
+            "maxEntries": 500,
+            "rotateBytes": "10mb"
+          }
+        }
+      }
+    }
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "appId": "cli_a92b16bd7121dbb6",
+      "appSecret": "IxisAuRZLh368cmedQfPrgoj6sSeMQjj",
+      "connectionMode": "websocket",
+      "accounts": {
+        "default": {
+          "appId": "cli_a92b16bd7121dbb6",
+          "appSecret": "IxisAuRZLh368cmedQfPrgoj6sSeMQjj"
+        },
+        "main": {
+          "appId": "cli_a92f913c69ba5bc6",
+          "appSecret": "uHjt7WgZ6vu4Nz23C6xsldz8KiCvAuUk"
+        },
+        "assistant": {
+          "appId": "cli_a92f9242bbfb5bd2",
+          "appSecret": "jY3nGX2Q5JAEKvfuqD2ENh5tycXGKEUE"
+        },
+        "skills-monitor": {
+          "appId": "cli_a92f9242bbfb5bd2",
+          "appSecret": "jY3nGX2Q5JAEKvfuqD2ENh5tycXGKEUE"
+        },
+        "douyin": {
+          "appId": "cli_a92f931a633a9bd6",
+          "appSecret": "9HPJ6zlDHFiGUe8vCOTpahje6PlEsOBV"
+        },
+        "voc-analyst": {
+          "appId": "cli_a92f8078e7ba5bc0",
+          "appSecret": "pZRlJSwVDoQCjTYfd3mQMds1OcbDK016"
+        },
+        "content-writer": {
+          "appId": "cli_a92f8103eaba5bca",
+          "appSecret": "j9S5ZHAas6r9gxJKEoTJAywN8MrfV06a"
+        },
+        "social-media": {
+          "appId": "cli_a92f81877cf99bd2",
+          "appSecret": "pa9MZfkMSZseUJjg2SzKPhm58JMdUdQY"
+        },
+        "reminder": {
+          "appId": "cli_a92febf6d47adbcd",
+          "appSecret": "s1bEUZCO1RJromN5keVf0cRV4vXBKcVl"
+        },
+        "designer": {
+          "appId": "cli_a92d627a8d7b9cee",
+          "appSecret": "X9cyQM0onj0r5PQu9XJHpbqZrnDEICVO"
+        }
+      }
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "2a6299f049ffdb987c524311f64cdb5096ecdbbdeb50957e"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "calendar.add",
+        "contacts.add",
+        "reminders.add"
+      ]
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "npm"
+    },
+    "entries": {
+      "goplaces": {
+        "apiKey": "sk-cp-gevOHkPCByxqh-ToffMGcuTsINEnIwZ8uY8BK6hGlDm_43YOADgv4fuA9Gklj9sIuMiQhJQXv2j2tz2IYfKVScs52vIJwO5ZyR5JVSQxuXOn9_bRl-hpC0k"
+      },
+      "ai-image-generator": {
+        "apiKey": "AIzaSyD5h-IfoA7VX1N9WXALZyx1FjeCwuIFa6Q",
+        "model": "gemini-3-pro-image-preview"
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "feishu": {
+        "enabled": true
+      }
+    }
+  },
+  "bindings": [
+    {
+      "agentId": "main",
+      "match": {
+        "channel": "feishu",
+        "accountId": "main"
+      }
+    },
+    {
+      "agentId": "douyin",
+      "match": {
+        "channel": "feishu",
+        "accountId": "douyin"
+      }
+    },
+    {
+      "agentId": "skills-monitor",
+      "match": {
+        "channel": "feishu",
+        "accountId": "skills-monitor"
+      }
+    },
+    {
+      "agentId": "voc-analyst",
+      "match": {
+        "channel": "feishu",
+        "accountId": "voc-analyst"
+      }
+    },
+    {
+      "agentId": "assistant",
+      "match": {
+        "channel": "feishu",
+        "accountId": "assistant"
+      }
+    },
+    {
+      "agentId": "content-writer",
+      "match": {
+        "channel": "feishu",
+        "accountId": "content-writer"
+      }
+    },
+    {
+      "agentId": "social-media",
+      "match": {
+        "channel": "feishu",
+        "accountId": "social-media"
+      }
+    },
+    {
+      "agentId": "designer",
+      "match": {
+        "channel": "feishu",
+        "accountId": "designer"
+      }
+    }
+  ]
+}
